@@ -22,14 +22,12 @@ function KioskApp() {
 
       if (res.data.valid) {
         setError("");
-        setTimeout(() =>{
-          window.print();
-        },500);
+        window.onafterprint = () =>{
+         setScreen ("welcome");
+        };
         // print only if order valid
         // back to welcome screen
-        setTimeout(() =>{
-          setScreen("welcome");
-        },3000);
+        window.print();
       } else {
         setError("Invalid Order Code");
       }
