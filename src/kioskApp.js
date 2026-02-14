@@ -22,12 +22,23 @@ function KioskApp() {
 
       if (res.data.valid) {
         setError("");
-        window.onafterprint = () =>{
-         setScreen ("welcome");
+
+        const fileUrl = res.data.fileUrl; // Backend se file URL
+
+        // Open file in new tab/window
+        const printWindow = window.open(fileUrl, "_blank");
+
+        // Wait for file to load then print
+        printWindow.onload = function () {
+          printWindow.focus();
+          printWindow.print();
+
+          // After printing, go back to welcome screen
+          printWindow.onafterprint = () => {
+            setScreen("welcome");
+          };
         };
-        // print only if order valid
-        // back to welcome screen
-        window.print();
+
       } else {
         setError("Invalid Order Code");
       }
