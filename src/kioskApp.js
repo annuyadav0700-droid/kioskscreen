@@ -5,46 +5,66 @@ function KioskApp() {
   const [screen, setScreen] = useState("welcome");
   const [orderCode, setOrderCode] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Start button click
   const handleStart = () => {
     setOrderCode("");
     setError("");
     setScreen("enterCode");
   };
 
-  // Submit order code
   const handleSubmit = async () => {
+    if (!orderCode) return;
+
+    setLoading(true);
+    setError("");
+
     try {
-      const res = await axios.post("https://a4stationbackend.onrender.com/verify-order", {
-        code: orderCode,
-      });
+      // 🔹 Backend verify
+      const res = await axios.post(
+        "https://a4stationbackend.onrender.com/verify-order",
+        { code: orderCode }
+      );
 
-      if (res.data.valid) {
-        setError("");
-
-        const fileUrl = res.data.fileUrl; // Backend se file URL
-
-        // Open file in new tab/window
-        const printWindow = window.open(fileUrl, "_blank");
-
-        // Wait for file to load then print
-        printWindow.onload = function () {
-          printWindow.focus();
-          printWindow.print();
-
-          // After printing, go back to welcome screen
-          printWindow.onafterprint = () => {
-            setScreen("welcome");
-          };
-        };
-
-      } else {
-        setError("Invalid Order Code");
+      if (!res.data.valid) {
+        setError("❌ Invalid Order Code");
+        setLoading(false);
+        return;
       }
+
+      const fileUrl = res.data.fileUrl;
+
+      // 🔹 Method 1 (Best): iframe print
+      const iframe = document.createElement("iframe");
+      iframe.style.position = "fixed";
+      iframe.style.right = "0";
+      iframe.style.bottom = "0";
+      iframe.style.width = "0";
+      iframe.style.height = "0";
+      iframe.src = fileUrl;
+
+      document.body.appendChild(iframe);
+
+      iframe.onload = () => {
+        setTimeout(() => {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        }, 500);
+      };
+
+      alert("✅ File loaded. Please confirm print.");
+
+      // 🔹 वापस welcome
+      setTimeout(() => {
+        setScreen("welcome");
+      }, 2000);
+
     } catch (err) {
-      setError("Error verifying order");
+      console.error(err);
+      setError("Server error");
     }
+
+    setLoading(false);
   };
 
   return (
@@ -54,7 +74,11 @@ function KioskApp() {
           <h1>Welcome to A4Station</h1>
           <button
             onClick={handleStart}
-            style={{ fontSize: "24px", padding: "20px 40px", cursor: "pointer" }}
+            style={{
+              fontSize: "24px",
+              padding: "20px 40px",
+              cursor: "pointer",
+            }}
           >
             Start
           </button>
@@ -64,20 +88,37 @@ function KioskApp() {
       {screen === "enterCode" && (
         <div>
           <h2>Enter Order Code</h2>
+
           <input
             type="text"
             value={orderCode}
             onChange={(e) => setOrderCode(e.target.value)}
-            style={{ fontSize: "24px", padding: "10px", width: "300px" }}
+            style={{
+              fontSize: "24px",
+              padding: "10px",
+              width: "300px",
+              textAlign: "center",
+            }}
           />
+
           <br />
+
           <button
             onClick={handleSubmit}
-            style={{ fontSize: "24px", padding: "15px 30px", marginTop: "20px", cursor: "pointer" }}
+            disabled={loading}
+            style={{
+              fontSize: "24px",
+              padding: "15px 30px",
+              marginTop: "20px",
+              cursor: "pointer",
+            }}
           >
-            Submit
+            {loading ? "Checking..." : "Submit"}
           </button>
-          {error && <p style={{ color: "red", fontSize: "20px" }}>{error}</p>}
+
+          {error && (
+            <p style={{ color: "red", fontSize: "20px" }}>{error}</p>
+          )}
         </div>
       )}
     </div>
