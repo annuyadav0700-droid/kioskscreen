@@ -1,38 +1,223 @@
-.App {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-blue: #2563EB;
+  --light-blue: #EAF2FF;
+  --dark: #0F172A;
+  --white: #FFFFFF;
+  
+  --success: #2563EB; /* Icons requested as Blue/Black, so using Primary Blue for success */
+  --danger: #ef4444;
+  --border-color: #e2e8f0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background-color: var(--white);
+  color: var(--dark);
+  font-family: 'Inter', -apple-system, sans-serif;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  /* Add subtle background gradients to make it pop and feel premium, but predominantly white */
+  background-image: 
+    radial-gradient(circle at 10% 10%, var(--light-blue) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, var(--light-blue) 0%, transparent 40%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.kiosk-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }
 
-.App-link {
-  color: #61dafb;
+.card {
+  background: var(--white);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  border-radius: 24px;
+  padding: 60px;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08); /* Premium soft shadow */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  margin-top: 0;
+  color: var(--dark);
+}
+
+.title .highlight {
+  color: var(--primary-blue);
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #4b5563; /* Soft dark text for better hierarchy */
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+
+/* MAIN BLUE BUTTON */
+.btn-primary {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: none;
+  border-radius: 16px;
+  padding: 20px 48px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 200px;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); /* strong blue shadow */
+}
+
+/* LIGHT BLUE HOVER STATE */
+.btn-primary:hover {
+  background: var(--light-blue);
+  color: var(--primary-blue);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* OUTLINE SECONDARY BUTTON */
+.btn-secondary {
+  background: var(--white);
+  color: var(--dark);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  padding: 18px 36px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--light-blue);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* PREMIUM INPUT FIELD */
+.code-input {
+  background: #f8fafc;
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  color: var(--dark);
+  font-size: 3rem;
+  font-weight: 700;
+  padding: 24px;
+  width: 100%;
+  text-align: center;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Inter', monospace;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.code-input:focus {
+  border-color: var(--primary-blue);
+  background: var(--white);
+  box-shadow: 0 0 0 4px var(--light-blue);
+}
+
+.code-input::placeholder {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.error-message {
+  color: var(--danger);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 24px;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+}
+
+/* ICONS -> BLUE */
+.success-icon {
+  font-size: 5rem;
+  color: var(--primary-blue);
+  margin-bottom: 24px;
+  animation: scale-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.text-success {
+  color: var(--dark); /* Kept Dark for the title to look more professional */
+}
+
+.small-text {
+  font-size: 1rem;
+  color: #64748b;
+  margin-top: 24px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+/* SPINNER */
+.spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white; 
+  animation: spin 1s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+/* Update spinner for hover state */
+.btn-primary:hover .spinner {
+  border: 3px solid rgba(37, 99, 235, 0.2);
+  border-top-color: var(--primary-blue);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scale-in {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+/* Premium success setup */
+.success-card {
+  border: 2px solid var(--light-blue);
+  background: linear-gradient(180deg, var(--white) 0%, var(--light-blue) 100%);
 }

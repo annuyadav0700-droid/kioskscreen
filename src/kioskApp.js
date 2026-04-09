@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./App.css";
 
 function KioskApp() {
   const [screen, setScreen] = useState("welcome");
@@ -34,30 +35,15 @@ function KioskApp() {
 
       const fileUrl = res.data.fileUrl;
 
-      // 🔹 Method 1 (Best): iframe print
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "fixed";
-      iframe.style.right = "0";
-      iframe.style.bottom = "0";
-      iframe.style.width = "0";
-      iframe.style.height = "0";
-      iframe.src = fileUrl;
+      // 🔹 Backend will trigger print, no popup needed
+      
+      // Show success screen
+      setScreen("success");
 
-      document.body.appendChild(iframe);
-
-      iframe.onload = () => {
-        setTimeout(() => {
-          iframe.contentWindow.focus();
-          iframe.contentWindow.print();
-        }, 500);
-      };
-
-      alert("✅ File loaded. Please confirm print.");
-
-      // 🔹 वापस welcome
+      // Go back to welcome screen after 5 seconds
       setTimeout(() => {
         setScreen("welcome");
-      }, 2000);
+      }, 5000);
 
     } catch (err) {
       console.error(err);
@@ -68,57 +54,58 @@ function KioskApp() {
   };
 
   return (
-    <div style={{ textAlign: "center", paddingTop: "100px" }}>
+    <div className="kiosk-container">
       {screen === "welcome" && (
-        <div>
-          <h1>Welcome to A4Station</h1>
-          <button
-            onClick={handleStart}
-            style={{
-              fontSize: "24px",
-              padding: "20px 40px",
-              cursor: "pointer",
-            }}
-          >
-            Start
+        <div className="card fade-in">
+          <h1 className="title">A4Station <span className="highlight">Kiosk</span></h1>
+          <p className="subtitle">Touch to start printing your documents securely</p>
+          <button className="btn-primary pulse" onClick={handleStart}>
+            Start Printing
           </button>
         </div>
       )}
 
       {screen === "enterCode" && (
-        <div>
-          <h2>Enter Order Code</h2>
+        <div className="card fade-in">
+          <h2 className="title">Enter Order Code</h2>
+          <p className="subtitle">Please enter the order code generated on your phone</p>
 
           <input
             type="text"
+            className="code-input"
             value={orderCode}
+            placeholder="e.g. 123456"
             onChange={(e) => setOrderCode(e.target.value)}
-            style={{
-              fontSize: "24px",
-              padding: "10px",
-              width: "300px",
-              textAlign: "center",
-            }}
+            autoFocus
           />
 
-          <br />
-
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            style={{
-              fontSize: "24px",
-              padding: "15px 30px",
-              marginTop: "20px",
-              cursor: "pointer",
-            }}
-          >
-            {loading ? "Checking..." : "Submit"}
-          </button>
+          <div className="action-buttons">
+            <button className="btn-secondary" onClick={() => setScreen("welcome")}>
+              Back
+            </button>
+            <button
+              className="btn-primary"
+              onClick={handleSubmit}
+              disabled={loading || !orderCode}
+            >
+              {loading ? <span className="spinner"></span> : "Print Now"}
+            </button>
+          </div>
 
           {error && (
-            <p style={{ color: "red", fontSize: "20px" }}>{error}</p>
+            <div className="error-message fade-in">
+              {error}
+            </div>
           )}
+        </div>
+      )}
+
+      {screen === "success" && (
+        <div className="card fade-in success-card">
+          <div className="success-icon">✓</div>
+          <h2 className="title text-success">Order Verified</h2>
+          <p className="subtitle">Your document is now printing!</p>
+          <p className="small-text">Please collect your pages below.</p>
         </div>
       )}
     </div>
